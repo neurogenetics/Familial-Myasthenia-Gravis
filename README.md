@@ -13,3 +13,6 @@ Among 1,032 patients, 58 (5.6%) reported a family history of myasthenia gravis. 
 
 **Conclusions**
 The familial rate of myasthenia gravis was higher than would be expected for a sporadic disease. Furthermore, a high proportion of patients had a personal or family history of autoimmune disease. Taken together, these findings suggest a genetic contribution to the pathogenesis of myasthenia gravis. 
+
+
+## Code Breakdown
