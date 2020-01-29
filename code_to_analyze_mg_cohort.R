@@ -1,5 +1,3 @@
-#19th August 2019
-#Josh added: counting the other autoimmune diseases that we are going include percentages for in Figure 2
 
 #load libraries
 library(readxl)
