@@ -1,12 +1,8 @@
-
 #load libraries
 library(readxl)
 
-#set working directory
-setwd("~/Documents/1.Projects/1.MG_epidemiology/A__Manuscript_Drafts/")
-
 #load the data
-data0 <- read_xlsx("clinical_data_for_Josh_paper_v1.xlsx", sheet="Sheet1")
+data0 <- read_xlsx("sample_data.xlsx", sheet="Sheet1")
 data1 <- as.data.frame(data0)
 
 #output the parameters
