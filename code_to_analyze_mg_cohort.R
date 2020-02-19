@@ -1,3 +1,4 @@
+#######Data and Library Import#######
 #load libraries
 library(readxl)
 
@@ -5,6 +6,7 @@ library(readxl)
 data0 <- read_xlsx("sample_data.xlsx", sheet="Sheet1")
 data1 <- as.data.frame(data0)
 
+#######Subsetting data#######
 #output the parameters
 #number of cases
 numberCases <- nrow(data1)
@@ -30,6 +32,7 @@ percentEarlyOnset <- earlyOnset*100/numberCases
 numberThymectomy <- nrow(subset(data1,data1$thymectomy=="yes"))
 percentThymectomy <- numberThymectomy*100/numberCases
 
+#######Mean age of onset#######
 #age of familial cases
 familial <- subset(data1, data1$family_history_of_mg=="yes")
 meanAgeAtSymptomOnsetFamilialCases <- mean(familial$age_at_symptom_onset)
@@ -40,13 +43,23 @@ sporadic <- subset(data1, data1$family_history_of_mg=="no")
 meanAgeAtSymptomOnsetSporadicCases <- mean(sporadic$age_at_symptom_onset)
 stdevAgeAtSymptomOnsetSporadicCases <- sd(sporadic$age_at_symptom_onset)
 
+#age of onset for males
+males <- subset(data1, data1$gender=="male")
+meanAgeAtSymptomMales <- mean(males$age_at_symptom_onset)
+print(paste("Mean age of sympton onset for males:",meanAgeAtSymptomMales))
+
+#age of onset for females 
+females <- subset(data1, data1$gender=="female")
+meanAgeAtSymptomFemales <- mean(females$age_at_symptom_onset)
+print(paste("Mean age of sympton onset for females:",meanAgeAtSymptomFemales))
+
+
 #test of familial versus sporadic age at onset
 t.test(sporadic$age_at_symptom_onset, familial$age_at_symptom_onset)
 
 #number of familial samples with age of onset less than 40
 numberYoungFamilial <- nrow(subset(familial, familial$age_at_symptom_onset<40))
 
-##########################################################################
 #cases with personal history of autoimmune disease
 #####notes
 #280 samples had a personal history in the first column "other_autoimmune_diseases"
@@ -57,6 +70,7 @@ numberYoungFamilial <- nrow(subset(familial, familial$age_at_symptom_onset<40))
 #of these 92, we delete jhu088 (ALS), jhu049 (enlarged prostate), iu019 (fibromyalgia), jhu058 (lyme) and iu041 (parathyroid surgery)
 #this brings the total down to 275
 
+#######Data wrangling#######
 #change the patient who had als
 data1$other_autoimmune_diseases[data1$patient_id2=="jhu088"] <- "no"
 data1$other_autoimmune_disease[data1$patient_id2=="jhu088"] <- "no"
@@ -86,7 +100,6 @@ data1$other_autoimmune_disease_name_1[data1$patient_id2=="iu041"] <- -999
 numberPersonalHistoryAutoimmuneDisease <- nrow(subset(data1, data1$other_autoimmune_diseases=="yes"))
 percentPersonalHistoryAutoimmuneDisease <- numberPersonalHistoryAutoimmuneDisease*100/numberCases
 
-##########################################################################
 #cases with family history of autoimmune disease
 #change the patient who had angiotropic lymphoma
 data1$fh_of_other_autoimmune_disease[data1$patient_id2=="iu069"] <- "no"
@@ -138,7 +151,6 @@ data1$fh_of_other_autoimmune_disease_3rd_member[data1$patient_id2=="jhu040"] <- 
 numberFamilyHistoryAutoimmuneDisease <- nrow(subset(data1, data1$fh_of_other_autoimmune_disease=="yes"))
 percentFamilyHistoryAutoimmuneDisease <- numberFamilyHistoryAutoimmuneDisease*100/numberCases
 
-##########################################################################
 #breakdown of personal history autoimmune diseases
 #There are 110 Thyroiditis cases
 ##In the other_autoimmune_disease_name_1, there are 2 hyperthyroid and 5 graves disease
@@ -188,7 +200,7 @@ numberRAPersonal <- nrow(subset(data1, data1$rheumatoid_arthritis == "yes" |
 percentRAPersonal <- numberRAPersonal*100/numberCases
 
 percentRAPersonal
-########JOSH ADDED ##############################
+
 #additional diseases for figure 2A: personal history
 ##Diabetes
 ##matches manual count by bryan = 29
@@ -379,9 +391,6 @@ numberDiabetesFamily <- nrow(subset(data1, data1$autoimmune_disease_disease == "
 percentDiabetesFamily <- numberDiabetesFamily*100/numberCases
 
 
-
-
-######JOSH ADDED#####################################################
 ##Lupus
 ###matches manual count by bryan
 numberSLEFamily <- nrow(subset(data1,
@@ -606,7 +615,7 @@ numberWithThreeFamilyMember <- nrow(subset(data1, data1$fh_of_other_autoimmune_d
 
 
 
-#######################################################
+#######male to female ratio#######
 #calculate female to male ratio in familial cases
 familial <- subset(data1, data1$family_history_of_mg=="yes")
 familialmales <- nrow(subset(familial, familial$gender=="male"))
@@ -614,12 +623,14 @@ familialfemales <- nrow(subset(familial, familial$gender=="female"))
 ratioFamilial <- familialmales/familialfemales
 
 #######################################################
-#calculate female to male ratio in familial cases
+#calculate female to male ratio in sporadic cases
 sporadic <- subset(data1, data1$family_history_of_mg!="yes")
 sporadicmales <- nrow(subset(sporadic, sporadic$gender=="male"))
 sporadicfemales <- nrow(subset(sporadic, sporadic$gender=="female"))
 ratioSporadic <- sporadicmales/sporadicfemales
 
+
+#######Statistical tests#######
 #######################################################
 #chiSquare of females in familial and sporadic
 table1 <- as.table(rbind(c(25,58-25),c(429,974-429)))
@@ -636,9 +647,7 @@ dimnames(table2) <- list(type=c("familial","sporadic"),
 XsqYoung <- chisq.test(table2)
 
 
-
-#######################################################
-#######################################################
+#######printing out the data i
 print(paste("Number of cases: ", numberCases))
 print(paste("Number of familial cases: ", numberFamilialCases, " (",percentFamilialCases,"%)", sep=""))
 print(paste("Number of early-onset cases: ", earlyOnset, " (",percentEarlyOnset,"%)", sep=""))
@@ -708,7 +717,6 @@ print(XsqFemale)
 print("___________________________________________________________________________")
 print(table2)
 print(XsqYoung)
-
 
 
 
