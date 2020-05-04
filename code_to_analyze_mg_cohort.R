@@ -648,12 +648,6 @@ dimnames(table2) <- list(type=c("familial","sporadic"),
 XsqYoung <- chisq.test(table2)
 
 
-
-
-
-
-
-
 ##############FMG and personal history of autoimmune diseases##########
 #are people with family history of myasthenia gravis more likely to have personal history of autoimmune diseases?
 
@@ -661,13 +655,13 @@ XsqYoung <- chisq.test(table2)
 numberpersonalAutoimmune_and_FMG <- nrow(subset(data1, data1$family_history_of_mg=="yes" & data1$other_autoimmune_disease=="yes"))
 percentpersonalAutoimmune_and_FMG <- numberpersonalAutoimmune_and_FMG*100/numberFamilialCases
 
-percentpersonalAutoimmune_and_FMG #output: %18.96 of the FMG cohort has personal history AutoImD
+percentpersonalAutoimmune_and_FMG #output: 18.96% of the FMG cohort has personal history AutoImD
 
 
 #number of people without family history with personal history
 numberpersonalAutoimmune_and_SMG <- nrow(subset(data1,data1$family_history_of_mg=="no" & data1$other_autoimmune_disease=="yes"))
 percentpersonalAutoimmune_and_SMG <- numberpersonalAutoimmune_and_SMG*100/numberSporadicCases
-percentpersonalAutoimmune_and_SMG #output: %10.0616 of the SMG cohort has a personal history of AutoImD
+percentpersonalAutoimmune_and_SMG #output: 10.0616% of the SMG cohort has a personal history of AutoImD
 
 
 
