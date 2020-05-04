@@ -15,14 +15,12 @@ numberCases <- nrow(data1)
 numberFamilialCases <- nrow(subset(data1, data1$family_history_of_mg=="yes"))
 percentFamilialCases <- numberFamilialCases*100/numberCases
 
+#number of sporadic cases 
+numberSporadicCases <- nrow(subset(data1, data1$family_history_of_mg=="no"))
+numberSporadicCases
 #mean age at symptom onset
 meanAgeAtSymptomOnsetAllCases <- mean(data1$age_at_symptom_onset)
 stdevAgeAtSymptomOnsetAllCases <- sd(data1$age_at_symptom_onset)
-
-#female to male ratio
-males <- nrow(subset(data1, data1$gender=="male"))
-females <- nrow(subset(data1, data1$gender=="female"))
-ratio <- males/females
 
 #early onset cases
 earlyOnset <- nrow(subset(data1, data1$age_at_symptom_onset<40))
@@ -32,7 +30,7 @@ percentEarlyOnset <- earlyOnset*100/numberCases
 numberThymectomy <- nrow(subset(data1,data1$thymectomy=="yes"))
 percentThymectomy <- numberThymectomy*100/numberCases
 
-#######Mean age of onset#######
+##############Mean age of onset#######
 #age of familial cases
 familial <- subset(data1, data1$family_history_of_mg=="yes")
 meanAgeAtSymptomOnsetFamilialCases <- mean(familial$age_at_symptom_onset)
@@ -70,7 +68,7 @@ numberYoungFamilial <- nrow(subset(familial, familial$age_at_symptom_onset<40))
 #of these 92, we delete jhu088 (ALS), jhu049 (enlarged prostate), iu019 (fibromyalgia), jhu058 (lyme) and iu041 (parathyroid surgery)
 #this brings the total down to 275
 
-#######Data wrangling#######
+##############Data wrangling#######
 #change the patient who had als
 data1$other_autoimmune_diseases[data1$patient_id2=="jhu088"] <- "no"
 data1$other_autoimmune_disease[data1$patient_id2=="jhu088"] <- "no"
@@ -275,7 +273,7 @@ numberOtherPersonal <- nrow(subset(data1, data1$other_autoimmune_disease_name_1 
 
 percentOtherPersonal <- numberOtherPersonal*100/numberCases
 
-##############calculations for figure 2C personal history############################# 
+##############Calculations for figure 2C personal history############################# 
 #multiple sclerosis
 fig2c_ms_personal <- nrow(subset(data1, data1$other_autoimmune_disease_name_1 == "multiple sclerosis"))
 percentfig2c_ms_personal <- fig2c_ms_personal*100/numberCases
@@ -304,7 +302,7 @@ fig2c_ibd_personal <- nrow(subset(data1,data1$other_autoimmune_disease_name_1 ==
 
 percentfig2c_ibd_personal <- fig2c_ibd_personal*100/numberCases
 percentfig2c_ibd_personal
-##########################################################################
+##############calculations for figure 2C personal historys
 #Family History Autoimmune diseases
 ##Thyroid Disease
 numberThyroidFamily <- nrow(subset(data1, 
@@ -544,7 +542,7 @@ numberOtherFamily<- nrow(subset(data1,
 
 percentOtherFamily <- numberOtherFamily*100/numberCases
 
-##############calculations for figure 2C personal history#############################
+##############Calculations for figure 2C family history#############################
 #Sarcoidosis --> none
 #blood diseases
 fig2c_blood_family <- nrow(subset(data1, data1$autoimmune_disease_disease == "blood disiese"))
@@ -569,7 +567,7 @@ fig2c_vitiligo_family <- nrow(subset(data1,data1$autoimmune_disease_disease_2nd_
 percentfig2c_vitiligo_family <- fig2c_vitiligo_family*100/numberCases
 percentfig2c_vitiligo_family
 
-##########################################################################
+##############Type of familial relationship###########
 ###type of relationship
 ###siblings
 numberSiblings <- nrow(subset(data1,  data1$mg_relationship == "brother" |
@@ -603,7 +601,7 @@ numberGrandparents <- nrow(subset(data1,  data1$mg_relationship == "grandfather"
 percentGrandparents <- numberGrandparents*100/numberFamilialCases
 
 
-#######################################################
+##############Calculate overlap in familial#########################################
 #calculate overlap in familial
 numberWithOneFamilyMember <- nrow(subset(data1, data1$fh_of_other_autoimmune_disease=="yes" &
                                                 data1$fh_of_other_autoimmune_disease_2nd_member=="no" &
@@ -617,14 +615,18 @@ numberWithThreeFamilyMember <- nrow(subset(data1, data1$fh_of_other_autoimmune_d
 
 
 
-#######male to female ratio#######
+##############Male to female ratio#######
+#female to male ratio
+males <- nrow(subset(data1, data1$gender=="male"))
+females <- nrow(subset(data1, data1$gender=="female"))
+ratio <- males/females
+
 #calculate female to male ratio in familial cases
 familial <- subset(data1, data1$family_history_of_mg=="yes")
 familialmales <- nrow(subset(familial, familial$gender=="male"))
 familialfemales <- nrow(subset(familial, familial$gender=="female"))
 ratioFamilial <- familialmales/familialfemales
 
-#######################################################
 #calculate female to male ratio in sporadic cases
 sporadic <- subset(data1, data1$family_history_of_mg!="yes")
 sporadicmales <- nrow(subset(sporadic, sporadic$gender=="male"))
@@ -632,16 +634,13 @@ sporadicfemales <- nrow(subset(sporadic, sporadic$gender=="female"))
 ratioSporadic <- sporadicmales/sporadicfemales
 
 
-#######Statistical tests#######
-#######################################################
+##############Statistical tests#######
 #chiSquare of females in familial and sporadic
 table1 <- as.table(rbind(c(25,58-25),c(429,974-429)))
 dimnames(table1) <- list(type=c("familial","sporadic"),
                          age=c("female","male"))
 XsqFemale <- chisq.test(table1)
 
-
-#######################################################
 #chiSquare of females in familial and sporadic
 table2 <- as.table(rbind(c(15,58-15),c(233,974-233)))
 dimnames(table2) <- list(type=c("familial","sporadic"),
@@ -649,7 +648,45 @@ dimnames(table2) <- list(type=c("familial","sporadic"),
 XsqYoung <- chisq.test(table2)
 
 
-#######printing out the data i
+
+
+
+
+
+
+##############FMG and personal history of autoimmune diseases##########
+#are people with family history of myasthenia gravis more likely to have personal history of autoimmune diseases?
+
+#number of people with family history with personal history
+numberpersonalAutoimmune_and_FMG <- nrow(subset(data1, data1$family_history_of_mg=="yes" & data1$other_autoimmune_disease=="yes"))
+percentpersonalAutoimmune_and_FMG <- numberpersonalAutoimmune_and_FMG*100/numberFamilialCases
+
+percentpersonalAutoimmune_and_FMG #output: %18.96 of the FMG cohort has personal history AutoImD
+
+
+#number of people without family history with personal history
+numberpersonalAutoimmune_and_SMG <- nrow(subset(data1,data1$family_history_of_mg=="no" & data1$other_autoimmune_disease=="yes"))
+percentpersonalAutoimmune_and_SMG <- numberpersonalAutoimmune_and_SMG*100/numberSporadicCases
+percentpersonalAutoimmune_and_SMG #output: %10.0616 of the SMG cohort has a personal history of AutoImD
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##############Printing out the data##########
 print(paste("Number of cases: ", numberCases))
 print(paste("Number of familial cases: ", numberFamilialCases, " (",percentFamilialCases,"%)", sep=""))
 print(paste("Number of early-onset cases: ", earlyOnset, " (",percentEarlyOnset,"%)", sep=""))
@@ -722,9 +759,21 @@ print(XsqYoung)
 
 
 
-#are people with family history of myasthenia gravis more likely to have personal history of autoimmune diseases?
-numberpersonalAutoimmune_and_MG <- nrow(subset(data1,c(data1$other_autoimmune_disease=="yes", data1$family_history_of_mg=="yes")))
-percentpersonalAutoimmune_and_MG <- numberpersonalAutoimmune_and_MG*100/numberPersonalHistoryAutoimmuneDisease
-percentpersonalAutoimmune_and_MG
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
