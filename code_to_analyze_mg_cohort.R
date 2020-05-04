@@ -3,7 +3,7 @@
 library(readxl)
 
 #load the data
-data0 <- read_xlsx("sample_data.xlsx", sheet="Sheet1")
+data0 <- read_xlsx("~/Desktop/Myasthenia_Gravis_Paper/clinical_data_for_Josh_paper_v1.xlsx", sheet="Sheet1")
 data1 <- as.data.frame(data0)
 
 #######Subsetting data#######
@@ -151,12 +151,14 @@ data1$fh_of_other_autoimmune_disease_3rd_member[data1$patient_id2=="jhu040"] <- 
 numberFamilyHistoryAutoimmuneDisease <- nrow(subset(data1, data1$fh_of_other_autoimmune_disease=="yes"))
 percentFamilyHistoryAutoimmuneDisease <- numberFamilyHistoryAutoimmuneDisease*100/numberCases
 
+
 #breakdown of personal history autoimmune diseases
 #There are 110 Thyroiditis cases
 ##In the other_autoimmune_disease_name_1, there are 2 hyperthyroid and 5 graves disease
 ###In the other_autoimmune_disease_name_2, there is 1 hypothyroid
 ####In the other_autoimmune_disease_name_3, there are no thyroid cases
 #####Total = 110 + 7 + 1 = 118 = 11.4%
+
 numberThyroidPersonal <- nrow(subset(data1, data1$thyroiditis == "yes" |
                               data1$other_autoimmune_disease_name_1 == "graves disease" | 
                                data1$other_autoimmune_disease_name_1 == "hyperthyroid" |
@@ -718,5 +720,11 @@ print("_________________________________________________________________________
 print(table2)
 print(XsqYoung)
 
+
+
+#are people with family history of myasthenia gravis more likely to have personal history of autoimmune diseases?
+numberpersonalAutoimmune_and_MG <- nrow(subset(data1,c(data1$other_autoimmune_disease=="yes", data1$family_history_of_mg=="yes")))
+percentpersonalAutoimmune_and_MG <- numberpersonalAutoimmune_and_MG*100/numberPersonalHistoryAutoimmuneDisease
+percentpersonalAutoimmune_and_MG
 
 
