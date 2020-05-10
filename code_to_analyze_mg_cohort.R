@@ -18,9 +18,9 @@ percentFamilialCases <- numberFamilialCases*100/numberCases
 #number of sporadic cases 
 numberSporadicCases <- nrow(subset(data1, data1$family_history_of_mg=="no"))
 numberSporadicCases
-#mean age at symptom onset
-meanAgeAtSymptomOnsetAllCases <- mean(data1$age_at_symptom_onset)
-stdevAgeAtSymptomOnsetAllCases <- sd(data1$age_at_symptom_onset)
+#median age at symptom onset
+medianAgeAtSymptomOnsetAllCases <- median(data1$age_at_symptom_onset)
+rangeAgeAtSymptomOnsetAllCases <- range(data1$age_at_symptom_onset)
 
 #early onset cases
 earlyOnset <- nrow(subset(data1, data1$age_at_symptom_onset<40))
@@ -30,26 +30,26 @@ percentEarlyOnset <- earlyOnset*100/numberCases
 numberThymectomy <- nrow(subset(data1,data1$thymectomy=="yes"))
 percentThymectomy <- numberThymectomy*100/numberCases
 
-##############Mean age of onset#######
+##############median age of onset#######
 #age of familial cases
 familial <- subset(data1, data1$family_history_of_mg=="yes")
-meanAgeAtSymptomOnsetFamilialCases <- mean(familial$age_at_symptom_onset)
-stdevAgeAtSymptomOnsetFamilialCases <- sd(familial$age_at_symptom_onset)
+medianAgeAtSymptomOnsetFamilialCases <- median(familial$age_at_symptom_onset)
+rangeAgeAtSymptomOnsetFamilialCases <- range(familial$age_at_symptom_onset)
 
 #age of sporadic cases
 sporadic <- subset(data1, data1$family_history_of_mg=="no")
-meanAgeAtSymptomOnsetSporadicCases <- mean(sporadic$age_at_symptom_onset)
-stdevAgeAtSymptomOnsetSporadicCases <- sd(sporadic$age_at_symptom_onset)
+medianAgeAtSymptomOnsetSporadicCases <- median(sporadic$age_at_symptom_onset)
+rangeAgeAtSymptomOnsetSporadicCases <- range(sporadic$age_at_symptom_onset)
 
 #age of onset for males
 males <- subset(data1, data1$gender=="male")
-meanAgeAtSymptomMales <- mean(males$age_at_symptom_onset)
-print(paste("Mean age of sympton onset for males:",meanAgeAtSymptomMales))
+medianAgeAtSymptomMales <- median(males$age_at_symptom_onset)
+print(paste("median age of sympton onset for males:",medianAgeAtSymptomMales))
 
 #age of onset for females 
 females <- subset(data1, data1$gender=="female")
-meanAgeAtSymptomFemales <- mean(females$age_at_symptom_onset)
-print(paste("Mean age of sympton onset for females:",meanAgeAtSymptomFemales))
+medianAgeAtSymptomFemales <- median(females$age_at_symptom_onset)
+print(paste("median age of sympton onset for females:",medianAgeAtSymptomFemales))
 
 
 #test of familial versus sporadic age at onset
@@ -58,6 +58,8 @@ t.test(sporadic$age_at_symptom_onset, familial$age_at_symptom_onset)
 #number of familial samples with age of onset less than 40
 numberYoungFamilial <- nrow(subset(familial, familial$age_at_symptom_onset<40))
 
+
+##############Data wrangling#######
 #cases with personal history of autoimmune disease
 #####notes
 #280 samples had a personal history in the first column "other_autoimmune_diseases"
@@ -67,8 +69,6 @@ numberYoungFamilial <- nrow(subset(familial, familial$age_at_symptom_onset<40))
 #92 samples had a personal history based on one of the second level diseases
 #of these 92, we delete jhu088 (ALS), jhu049 (enlarged prostate), iu019 (fibromyalgia), jhu058 (lyme) and iu041 (parathyroid surgery)
 #this brings the total down to 275
-
-##############Data wrangling#######
 #change the patient who had als
 data1$other_autoimmune_diseases[data1$patient_id2=="jhu088"] <- "no"
 data1$other_autoimmune_disease[data1$patient_id2=="jhu088"] <- "no"
@@ -695,14 +695,13 @@ print(paste("Female to male ratio - sporadic cases: ", sporadicfemales, ":", spo
 
 
 print("___________________________________________________________________________")
-print(paste("Mean age at onset of all cases: ", meanAgeAtSymptomOnsetAllCases, " (",stdevAgeAtSymptomOnsetAllCases,")", sep=""))
-print(paste("Mean age at onset of familial cases: ",  meanAgeAtSymptomOnsetFamilialCases, " (",    stdevAgeAtSymptomOnsetFamilialCases,")", sep=""))
-print(paste("Mean age at onset of sporadic cases: ",  meanAgeAtSymptomOnsetSporadicCases, " (",    stdevAgeAtSymptomOnsetSporadicCases,")", sep=""))
+print(paste("median age at onset of all cases: ", medianAgeAtSymptomOnsetAllCases, " (",rangeAgeAtSymptomOnsetAllCases,")", sep=""))
+print(paste("median age at onset of familial cases: ",  medianAgeAtSymptomOnsetFamilialCases, " (",    rangeAgeAtSymptomOnsetFamilialCases,")", sep=""))
+print(paste("median age at onset of sporadic cases: ",  medianAgeAtSymptomOnsetSporadicCases, " (",    rangeAgeAtSymptomOnsetSporadicCases,")", sep=""))
 
 
 print("___________________________________________________________________________")
 print(t.test(sporadic$age_at_symptom_onset, familial$age_at_symptom_onset))
-
 
 print("___________________________________________________________________________")
 print(paste("Number of cases with personal history of autoimmune disease: ",   numberPersonalHistoryAutoimmuneDisease, " (",percentPersonalHistoryAutoimmuneDisease,"%)", sep=""))
