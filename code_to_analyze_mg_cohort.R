@@ -53,7 +53,7 @@ print(paste("median age of sympton onset for females:",medianAgeAtSymptomFemales
 
 
 #test of familial versus sporadic age at onset
-t.test(sporadic$age_at_symptom_onset, familial$age_at_symptom_onset)
+wilcox.test(sporadic$age_at_symptom_onset, familial$age_at_symptom_onset)
 
 #number of familial samples with age of onset less than 40
 numberYoungFamilial <- nrow(subset(familial, familial$age_at_symptom_onset<40))
@@ -650,7 +650,6 @@ XsqYoung <- chisq.test(table2)
 
 ##############FMG and personal history of autoimmune diseases##########
 #are people with family history of myasthenia gravis more likely to have personal history of autoimmune diseases?
-
 #number of people with family history with personal history
 numberpersonalAutoimmune_and_FMG <- nrow(subset(data1, data1$family_history_of_mg=="yes" & data1$other_autoimmune_disease=="yes"))
 percentpersonalAutoimmune_and_FMG <- numberpersonalAutoimmune_and_FMG*100/numberFamilialCases
@@ -664,15 +663,91 @@ percentpersonalAutoimmune_and_SMG <- numberpersonalAutoimmune_and_SMG*100/number
 percentpersonalAutoimmune_and_SMG #output: 10.0616% of the SMG cohort has a personal history of AutoImD
 
 
+#relationship between thyroid disease and family history of thyroid disease
 
 
+#create subset of people with personal history of thyroid disease
+ThyroidPersonal_df <- subset(data1, data1$thyroiditis == "yes" |
+                                        data1$other_autoimmune_disease_name_1 == "graves disease" | 
+                                        data1$other_autoimmune_disease_name_1 == "hyperthyroid" |
+                                        data1$other_autoimmune_disease_name_1 == "hypothyroid" |
+                                        data1$other_autoimmune_disease_name_2 == "graves disease" | 
+                                        data1$other_autoimmune_disease_name_2 == "hyperthyroid" |
+                                        data1$other_autoimmune_disease_name_2 == "hypothyroid" |
+                                        data1$other_autoimmune_disease_name_3 == "graves disease" | 
+                                        data1$other_autoimmune_disease_name_3 == "hyperthyroid" |
+                                        data1$other_autoimmune_disease_name_3 == "hypothyroid" )
+#create subset of people with family history of thyroid disease
+ThyroidFamily_df <- subset(data1, data1$autoimmune_disease_disease == "euthyroid, graves, opthalmopathy" |
+                                      data1$autoimmune_disease_disease == "goitre" |
+                                      data1$autoimmune_disease_disease == "graves disease" |
+                                      data1$autoimmune_disease_disease == "hashimoto's disease" |
+                                      data1$autoimmune_disease_disease == "hashimoto's thyroid" |
+                                      data1$autoimmune_disease_disease == "hyperactive thyroid" |
+                                      data1$autoimmune_disease_disease == "hyperthyroid" |
+                                      data1$autoimmune_disease_disease == "hypothyroid" |
+                                      data1$autoimmune_disease_disease == "thyroid" |
+                                      data1$autoimmune_disease_disease == "thyroid disease" |
+                                      data1$autoimmune_disease_disease == "thyroid disease, melanoma" |
+                                      data1$autoimmune_disease_disease == "thyroid disease, rheumatoid arthritis" |
+                                      data1$autoimmune_disease_disease == "thyroid disease/thyroid disease" |
+                                      data1$autoimmune_disease_disease == "thyroiditis" |
+                                      data1$autoimmune_disease_disease == "thyroiditis, diabetes" |
+                                      data1$autoimmune_disease_disease_2nd_member == "euthyroid, graves, opthalmopathy" |
+                                      data1$autoimmune_disease_disease_2nd_member == "goitre" |
+                                      data1$autoimmune_disease_disease_2nd_member == "graves disease" |
+                                      data1$autoimmune_disease_disease_2nd_member == "hashimoto's disease" |
+                                      data1$autoimmune_disease_disease_2nd_member == "hashimoto's thyroid" |
+                                      data1$autoimmune_disease_disease_2nd_member == "hyperactive thyroid" |
+                                      data1$autoimmune_disease_disease_2nd_member == "hyperthyroid" |
+                                      data1$autoimmune_disease_disease_2nd_member == "hypothyroid" |
+                                      data1$autoimmune_disease_disease_2nd_member == "thyroid" |
+                                      data1$autoimmune_disease_disease_2nd_member == "thyroid disease" |
+                                      data1$autoimmune_disease_disease_2nd_member == "thyroid disease, melanoma" |
+                                      data1$autoimmune_disease_disease_2nd_member == "thyroid disease, rheumatoid arthritis" |
+                                      data1$autoimmune_disease_disease_2nd_member == "thyroid disease/thyroid disease" |
+                                      data1$autoimmune_disease_disease_2nd_member == "thyroiditis" |
+                                      data1$autoimmune_disease_disease_2nd_member == "thyroiditis, diabetes" |
+                                      data1$autoimmune_disease_disease_3rd_member == "euthyroid, graves, opthalmopathy" |
+                                      data1$autoimmune_disease_disease_3rd_member == "goitre" |
+                                      data1$autoimmune_disease_disease_3rd_member == "graves disease" |
+                                      data1$autoimmune_disease_disease_3rd_member == "hashimoto's disease" |
+                                      data1$autoimmune_disease_disease_3rd_member == "hashimoto's thyroid" |
+                                      data1$autoimmune_disease_disease_3rd_member == "hyperactive thyroid" |
+                                      data1$autoimmune_disease_disease_3rd_member == "hyperthyroid" |
+                                      data1$autoimmune_disease_disease_3rd_member == "hypothyroid" |
+                                      data1$autoimmune_disease_disease_3rd_member == "thyroid" |
+                                      data1$autoimmune_disease_disease_3rd_member == "thyroid disease" |
+                                      data1$autoimmune_disease_disease_3rd_member == "thyroid disease, melanoma" |
+                                      data1$autoimmune_disease_disease_3rd_member == "thyroid disease, rheumatoid arthritis" |
+                                      data1$autoimmune_disease_disease_3rd_member == "thyroid disease/thyroid disease" |
+                                      data1$autoimmune_disease_disease_3rd_member == "thyroiditis" |
+                                      data1$autoimmune_disease_disease_3rd_member == "thyroiditis, diabetes" )
+
+#look where the personal and family thyroid disease cases intersect
+FamilyTD_intersect_PersonalTD <- length(intersect(ThyroidPersonal_df$patient_id1, ThyroidFamily_df$patient_id1))
+
+print(paste("Patients with a famliy history of thyroid disease also with thyroid disease:", FamilyTD_intersect_PersonalTD))
 
 
+#subset patients without thyroid disease 
+not_ThyroidPersonal_df <- subset(data1, !(data1$thyroiditis == "yes" |
+                                data1$other_autoimmune_disease_name_1 == "graves disease" | 
+                                data1$other_autoimmune_disease_name_1 == "hyperthyroid" |
+                                data1$other_autoimmune_disease_name_1 == "hypothyroid" |
+                                data1$other_autoimmune_disease_name_2 == "graves disease" | 
+                                data1$other_autoimmune_disease_name_2 == "hyperthyroid" |
+                                data1$other_autoimmune_disease_name_2 == "hypothyroid" |
+                                data1$other_autoimmune_disease_name_3 == "graves disease" | 
+                                data1$other_autoimmune_disease_name_3 == "hyperthyroid" |
+                                data1$other_autoimmune_disease_name_3 == "hypothyroid" ))
+
+#look where patient without thyroid disease but with family history of thyroid disease intersect
+FamilyTD_intersect_notPersonalTD <- length(intersect(not_ThyroidPersonal_df$patient_id1, ThyroidFamily_df$patient_id1))
 
 
-
-
-
+print(paste("Patients with a famliy history of thyroid disease also with thyroid disease:", FamilyTD_intersect_PersonalTD))
+print(paste("Patients with a family history of thyroid disease without thyroid disease", FamilyTD_intersect_notPersonalTD))
 
 
 
